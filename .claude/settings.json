@@ -2,7 +2,7 @@
   "hooks": {
     "SessionStart": [
       {
-        "matcher": "*",
+        "matchers": ["*"],
         "hooks": [
           {
             "type": "command",
