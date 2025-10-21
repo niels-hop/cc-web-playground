@@ -2,12 +2,11 @@
   "hooks": {
     "SessionStart": [
       {
-        "matchers": ["*"],
+        "matcher": "startup",
         "hooks": [
           {
             "type": "command",
-            "command": "curl -fsSL https://bun.com/install | bash",
-            "description": "Install Bun runtime at the start of every session"
+            "command": "\"$CLAUDE_PROJECT_DIR\"/scripts/install_pkgs.sh"
           }
         ]
       }
