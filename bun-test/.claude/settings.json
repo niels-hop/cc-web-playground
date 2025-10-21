@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "curl -fsSL https://bun.com/install | bash",
+            "description": "Install Bun runtime at the start of every session"
+          }
+        ]
+      }
+    ]
+  }
+}
