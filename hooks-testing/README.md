@@ -16,10 +16,11 @@ Testing which Claude Code hooks are supported in the web version.
 
 ## Status
 
-- ✅ SessionStart (working)
-- 🧪 PreToolUse (testing)
-- 🧪 PostToolUse (testing)
-- 🧪 UserPromptSubmit (testing)
-- 📋 Stop, SubagentStop, Notification, SessionEnd, PreCompact (pending)
+- ✅ SessionStart (verified working)
+- ✅ PreToolUse (verified working - silent logging)
+- ✅ PostToolUse (verified working - silent logging)
+- ✅ UserPromptSubmit (verified working)
+- ✅ Stop (verified working - git check)
+- 📋 SubagentStop, Notification, SessionEnd, PreCompact (pending)
 
 Read `CLAUDE.md` for full documentation and testing procedures.

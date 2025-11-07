@@ -163,3 +163,169 @@
   }
 }
 ---
+[2025-11-07 19:16:28] PreToolUse hook triggered
+{
+  "session_id": "cafd49ba-3da4-4a8f-8b43-84e00ab844f9",
+  "transcript_path": "/root/.claude/projects/-home-user-cc-web-playground/cafd49ba-3da4-4a8f-8b43-84e00ab844f9.jsonl",
+  "cwd": "/home/user/cc-web-playground",
+  "permission_mode": "default",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Bash",
+  "tool_input": {
+    "command": "git push -u origin claude/test-o-011CUu4Nbu4Gfckjhn2EDdxw",
+    "timeout": 30000,
+    "description": "Push changes to remote branch"
+  }
+}
+---
+[2025-11-07 19:16:39] PostToolUse hook triggered
+{
+  "session_id": "cafd49ba-3da4-4a8f-8b43-84e00ab844f9",
+  "transcript_path": "/root/.claude/projects/-home-user-cc-web-playground/cafd49ba-3da4-4a8f-8b43-84e00ab844f9.jsonl",
+  "cwd": "/home/user/cc-web-playground",
+  "permission_mode": "default",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Read",
+  "tool_input": {
+    "file_path": "/home/user/cc-web-playground/hooks-testing/TEST-RESULTS-SUMMARY.md"
+  },
+  "tool_response": {
+    "type": "text",
+    "file": {
+      "filePath": "/home/user/cc-web-playground/hooks-testing/TEST-RESULTS-SUMMARY.md",
+      "content": "# Claude Code Hooks Test Results - Web Version\n\n**Test Date**: 2025-11-07\n**Session ID**: cafd49ba-3da4-4a8f-8b43-84e00ab844f9\n**Environment**: Claude Code Web Version\n\n## Executive Summary\n\nAll four configured hooks are **WORKING** in the web version:\n- ✅ **SessionStart**: Working\n- ✅ **UserPromptSubmit**: Working\n- ✅ **PreToolUse**: Working\n- ✅ **PostToolUse**: Working\n\n## Test Results Details\n\n### 1. SessionStart Hook ✅\n**Status**: Working\n**Evidence**: Startup message showed bun installation success\n**Trigger**: Session initialization\n**Output visible in transcript**: Yes\n\n```\nSessionStart:startup hook success: Installing bun via npm...\nadded 5 packages in 10s\nBun installation successful!\n```\n\n### 2. UserPromptSubmit Hook ✅\n**Status**: Working\n**Evidence**: 1 log entry, visible output message\n**Trigger**: User prompt submission\n**Output visible in transcript**: Yes\n\n```\n🟡 UserPromptSubmit Hook: User submitted a prompt at 2025-11-07 19:11:48\n   Preview: unknown...\n```\n\n**Log Entry Count**: 1\n\n### 3. PreToolUse Hook ✅\n**Status**: Working\n**Evidence**: 8+ log entries with detailed tool input\n**Triggers**: Write, Edit, Bash commands\n**Output visible in transcript**: **No** (logs only)\n\n**Captured Events**:\n- Edit command (test.txt modification)\n- Multiple Bash commands (echo, cat, grep, etc.)\n- All tool inputs properly logged with JSON details\n\n**Log Entry Count**: 8+\n\n**Sample Log Entry**:\n```json\n{\n  \"session_id\": \"cafd49ba-3da4-4a8f-8b43-84e00ab844f9\",\n  \"hook_event_name\": \"PreToolUse\",\n  \"tool_name\": \"Edit\",\n  \"tool_input\": {\n    \"file_path\": \"/home/user/cc-web-playground/hooks-testing/test.txt\",\n    \"old_string\": \"...\",\n    \"new_string\": \"...\"\n  }\n}\n```\n\n### 4. PostToolUse Hook ✅\n**Status**: Working\n**Evidence**: 2+ log entries with tool response data\n**Triggers**: Read, Grep, Glob commands\n**Output visible in transcript**: **No** (logs only)\n\n**Captured Events**:\n- Grep command with full response data\n- Tool responses include content and metadata\n\n**Log Entry Count**: 2+\n\n**Sample Log Entry**:\n```json\n{\n  \"session_id\": \"cafd49ba-3da4-4a8f-8b43-84e00ab844f9\",\n  \"hook_event_name\": \"PostToolUse\",\n  \"tool_name\": \"Grep\",\n  \"tool_input\": {\n    \"pattern\": \"PostToolUse\",\n    \"path\": \"hooks-testing/test-results/hook-results.log\",\n    \"output_mode\": \"content\"\n  },\n  \"tool_response\": {\n    \"mode\": \"content\",\n    \"numFiles\": 0,\n    \"content\": \"...\",\n    \"numLines\": 8\n  }\n}\n```\n\n## Key Findings\n\n### ✅ What Works\n1. **All hooks execute successfully** - Scripts run and complete with exit 0\n2. **JSON logging works** - All hook data is captured in log file\n3. **Tool input/output data available** - PreToolUse gets input, PostToolUse gets response\n4. **Session metadata included** - Session ID, transcript path, CWD all present\n\n### ⚠️ Important Observations\n\n1. **Hook output visibility differs by type**:\n   - SessionStart & UserPromptSubmit: Output messages appear in transcript\n   - PreToolUse & PostToolUse: Output messages do NOT appear in transcript (but hooks execute and log successfully)\n\n2. **No blocking behavior observed**: All hooks run asynchronously without blocking tool execution\n\n3. **Logging required directory creation**: The test-results directory needed to be created manually before logs would persist\n\n## Tested Tool Coverage\n\n### PreToolUse Tested With:\n- ✅ Write (new file creation)\n- ✅ Edit (file modification)\n- ✅ Bash (multiple commands)\n\n### PostToolUse Tested With:\n- ✅ Read (file reading)\n- ✅ Grep (content search)\n- ❓ Glob (needs explicit test)\n\n## Configuration Details\n\n**Location**: `.claude/settings.json`\n\n**Hook Scripts**:\n- `hooks-testing/test-scripts/pre-tool-use.sh`\n- `hooks-testing/test-scripts/post-tool-use.sh`\n- `hooks-testing/test-scripts/user-prompt-submit.sh`\n\n**Log File**: `hooks-testing/test-results/hook-results.log`\n\n## Next Steps\n\n### Remaining Hooks to Test (5/9)\n- [ ] **Stop**: Triggers when Claude finishes responding\n- [ ] **SubagentStop**: Triggers when Task tool completes\n- [ ] **Notification**: Triggers on permission requests\n- [ ] **SessionEnd**: Triggers when session terminates\n- [ ] **PreCompact**: Triggers before context compaction\n\n### Additional Testing Needed\n1. Test Glob tool explicitly for PostToolUse\n2. Investigate why PreToolUse/PostToolUse messages don't appear in transcript\n3. Test hook blocking behavior (exit code 2)\n4. Test JSON response format for hooks\n5. Test concurrent hook execution\n\n## Conclusions\n\nThe Claude Code web version has **full support for the tested hooks**:\n- All 4 tested hooks execute successfully\n- Logging and data capture work correctly\n- Hooks can access tool inputs and outputs\n- Performance appears unaffected\n\n**Recommendation**: Proceed with implementing and testing the remaining 5 hook types.\n\n---\n\n**Test conducted by**: Claude (Sonnet 4.5)\n**Log file**: `hooks-testing/test-results/hook-results.log`\n**Total log entries**: 95+ lines\n",
+      "numLines": 173,
+      "startLine": 1,
+      "totalLines": 173
+    }
+  }
+}
+---
+[2025-11-07 19:16:47] PreToolUse hook triggered
+{
+  "session_id": "cafd49ba-3da4-4a8f-8b43-84e00ab844f9",
+  "transcript_path": "/root/.claude/projects/-home-user-cc-web-playground/cafd49ba-3da4-4a8f-8b43-84e00ab844f9.jsonl",
+  "cwd": "/home/user/cc-web-playground",
+  "permission_mode": "default",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "/home/user/cc-web-playground/hooks-testing/TEST-RESULTS-SUMMARY.md",
+    "old_string": "## Executive Summary\n\nAll four configured hooks are **WORKING** in the web version:\n- ✅ **SessionStart**: Working\n- ✅ **UserPromptSubmit**: Working\n- ✅ **PreToolUse**: Working\n- ✅ **PostToolUse**: Working",
+    "new_string": "## Executive Summary\n\nAll five tested hooks are **WORKING** in the web version:\n- ✅ **SessionStart**: Working\n- ✅ **UserPromptSubmit**: Working\n- ✅ **PreToolUse**: Working\n- ✅ **PostToolUse**: Working\n- ✅ **Stop**: Working"
+  }
+}
+---
+[2025-11-07 19:16:56] PreToolUse hook triggered
+{
+  "session_id": "cafd49ba-3da4-4a8f-8b43-84e00ab844f9",
+  "transcript_path": "/root/.claude/projects/-home-user-cc-web-playground/cafd49ba-3da4-4a8f-8b43-84e00ab844f9.jsonl",
+  "cwd": "/home/user/cc-web-playground",
+  "permission_mode": "default",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "/home/user/cc-web-playground/hooks-testing/TEST-RESULTS-SUMMARY.md",
+    "old_string": "  }\n}\n```\n\n## Key Findings",
+    "new_string": "  }\n}\n```\n\n### 5. Stop Hook ✅\n**Status**: Working\n**Evidence**: Visible feedback message after Claude finishes responding\n**Trigger**: When Claude completes a response\n**Output visible in transcript**: Yes\n**Configuration**: User has custom git check hook at `~/.claude/stop-hook-git-check.sh`\n\n**Example Output**:\n```\n[~/.claude/stop-hook-git-check.sh]: There are untracked files in the repository.\nPlease commit and push these changes to the remote branch.\n```\n\n**Use Case Demonstrated**:\nThe Stop hook successfully monitors git status and reminds the user to commit changes, demonstrating practical workflow automation.\n\n## Key Findings"
+  }
+}
+---
+[2025-11-07 19:17:02] PreToolUse hook triggered
+{
+  "session_id": "cafd49ba-3da4-4a8f-8b43-84e00ab844f9",
+  "transcript_path": "/root/.claude/projects/-home-user-cc-web-playground/cafd49ba-3da4-4a8f-8b43-84e00ab844f9.jsonl",
+  "cwd": "/home/user/cc-web-playground",
+  "permission_mode": "default",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "/home/user/cc-web-playground/hooks-testing/TEST-RESULTS-SUMMARY.md",
+    "old_string": "1. **Hook output visibility differs by type**:\n   - SessionStart & UserPromptSubmit: Output messages appear in transcript\n   - PreToolUse & PostToolUse: Output messages do NOT appear in transcript (but hooks execute and log successfully)",
+    "new_string": "1. **Hook output visibility differs by type**:\n   - SessionStart, UserPromptSubmit & Stop: Output messages appear in transcript\n   - PreToolUse & PostToolUse: Output messages do NOT appear in transcript (but hooks execute and log successfully)"
+  }
+}
+---
+[2025-11-07 19:17:08] PreToolUse hook triggered
+{
+  "session_id": "cafd49ba-3da4-4a8f-8b43-84e00ab844f9",
+  "transcript_path": "/root/.claude/projects/-home-user-cc-web-playground/cafd49ba-3da4-4a8f-8b43-84e00ab844f9.jsonl",
+  "cwd": "/home/user/cc-web-playground",
+  "permission_mode": "default",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "/home/user/cc-web-playground/hooks-testing/TEST-RESULTS-SUMMARY.md",
+    "old_string": "### Remaining Hooks to Test (5/9)\n- [ ] **Stop**: Triggers when Claude finishes responding\n- [ ] **SubagentStop**: Triggers when Task tool completes\n- [ ] **Notification**: Triggers on permission requests\n- [ ] **SessionEnd**: Triggers when session terminates\n- [ ] **PreCompact**: Triggers before context compaction",
+    "new_string": "### Remaining Hooks to Test (4/9)\n- [x] **Stop**: ✅ Working (git check hook verified)\n- [ ] **SubagentStop**: Triggers when Task tool completes\n- [ ] **Notification**: Triggers on permission requests\n- [ ] **SessionEnd**: Triggers when session terminates\n- [ ] **PreCompact**: Triggers before context compaction"
+  }
+}
+---
+[2025-11-07 19:17:14] PreToolUse hook triggered
+{
+  "session_id": "cafd49ba-3da4-4a8f-8b43-84e00ab844f9",
+  "transcript_path": "/root/.claude/projects/-home-user-cc-web-playground/cafd49ba-3da4-4a8f-8b43-84e00ab844f9.jsonl",
+  "cwd": "/home/user/cc-web-playground",
+  "permission_mode": "default",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "/home/user/cc-web-playground/hooks-testing/TEST-RESULTS-SUMMARY.md",
+    "old_string": "## Conclusions\n\nThe Claude Code web version has **full support for the tested hooks**:\n- All 4 tested hooks execute successfully\n- Logging and data capture work correctly\n- Hooks can access tool inputs and outputs\n- Performance appears unaffected\n\n**Recommendation**: Proceed with implementing and testing the remaining 5 hook types.",
+    "new_string": "## Conclusions\n\nThe Claude Code web version has **full support for the tested hooks**:\n- All 5 tested hooks execute successfully\n- Logging and data capture work correctly\n- Hooks can access tool inputs and outputs\n- Performance appears unaffected\n- Stop hook demonstrates practical workflow automation (git status checks)\n\n**Recommendation**: Proceed with implementing and testing the remaining 4 hook types."
+  }
+}
+---
+[2025-11-07 19:17:29] PostToolUse hook triggered
+{
+  "session_id": "cafd49ba-3da4-4a8f-8b43-84e00ab844f9",
+  "transcript_path": "/root/.claude/projects/-home-user-cc-web-playground/cafd49ba-3da4-4a8f-8b43-84e00ab844f9.jsonl",
+  "cwd": "/home/user/cc-web-playground",
+  "permission_mode": "default",
+  "hook_event_name": "PostToolUse",
+  "tool_name": "Read",
+  "tool_input": {
+    "file_path": "/home/user/cc-web-playground/hooks-testing/README.md"
+  },
+  "tool_response": {
+    "type": "text",
+    "file": {
+      "filePath": "/home/user/cc-web-playground/hooks-testing/README.md",
+      "content": "# Hooks Testing Experiment\n\nTesting which Claude Code hooks are supported in the web version.\n\n## Quick Start\n\n1. **View the manual**: See `CLAUDE.md` for comprehensive testing instructions\n2. **Current hooks configured**: PreToolUse, PostToolUse, UserPromptSubmit (+ SessionStart)\n3. **View logs**: `cat test-results/hook-results.log`\n\n## Test the Hooks\n\n- **PreToolUse**: Ask Claude to create/edit a file or run a bash command\n- **PostToolUse**: Ask Claude to read a file\n- **UserPromptSubmit**: Send any message (this hook just triggered!)\n\n## Status\n\n- ✅ SessionStart (working)\n- 🧪 PreToolUse (testing)\n- 🧪 PostToolUse (testing)\n- 🧪 UserPromptSubmit (testing)\n- 📋 Stop, SubagentStop, Notification, SessionEnd, PreCompact (pending)\n\nRead `CLAUDE.md` for full documentation and testing procedures.\n",
+      "numLines": 26,
+      "startLine": 1,
+      "totalLines": 26
+    }
+  }
+}
+---
+[2025-11-07 19:17:35] PreToolUse hook triggered
+{
+  "session_id": "cafd49ba-3da4-4a8f-8b43-84e00ab844f9",
+  "transcript_path": "/root/.claude/projects/-home-user-cc-web-playground/cafd49ba-3da4-4a8f-8b43-84e00ab844f9.jsonl",
+  "cwd": "/home/user/cc-web-playground",
+  "permission_mode": "default",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Edit",
+  "tool_input": {
+    "file_path": "/home/user/cc-web-playground/hooks-testing/README.md",
+    "old_string": "## Status\n\n- ✅ SessionStart (working)\n- 🧪 PreToolUse (testing)\n- 🧪 PostToolUse (testing)\n- 🧪 UserPromptSubmit (testing)\n- 📋 Stop, SubagentStop, Notification, SessionEnd, PreCompact (pending)",
+    "new_string": "## Status\n\n- ✅ SessionStart (verified working)\n- ✅ PreToolUse (verified working - silent logging)\n- ✅ PostToolUse (verified working - silent logging)\n- ✅ UserPromptSubmit (verified working)\n- ✅ Stop (verified working - git check)\n- 📋 SubagentStop, Notification, SessionEnd, PreCompact (pending)"
+  }
+}
+---
+[2025-11-07 19:17:45] PreToolUse hook triggered
+{
+  "session_id": "cafd49ba-3da4-4a8f-8b43-84e00ab844f9",
+  "transcript_path": "/root/.claude/projects/-home-user-cc-web-playground/cafd49ba-3da4-4a8f-8b43-84e00ab844f9.jsonl",
+  "cwd": "/home/user/cc-web-playground",
+  "permission_mode": "default",
+  "hook_event_name": "PreToolUse",
+  "tool_name": "Bash",
+  "tool_input": {
+    "command": "git add hooks-testing/ && git commit -m \"$(cat <<'EOF'\nUpdate hooks testing results: Stop hook verified working\n\nAdded Stop hook test results to documentation:\n- Stop hook successfully triggers after Claude finishes responding\n- Provides visible feedback in transcript\n- Demonstrated practical use case: git status checking\n- Updated README and TEST-RESULTS-SUMMARY with findings\n\nCurrent status: 5/9 hooks verified working in web version\n- SessionStart, UserPromptSubmit, PreToolUse, PostToolUse, Stop ✅\n- SubagentStop, Notification, SessionEnd, PreCompact (pending)\nEOF\n)\" && git push",
+    "timeout": 30000,
+    "description": "Commit and push Stop hook updates"
+  }
+}
+---
