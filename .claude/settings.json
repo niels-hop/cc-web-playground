@@ -45,6 +45,17 @@
           }
         ]
       }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "You are evaluating whether Claude should stop working. Analyze the conversation context provided in: $ARGUMENTS\n\nYou must check TWO critical things:\n\n1. **User Request Completion**: Has Claude fully completed what the user originally asked for?\n   - Are all requested features implemented?\n   - Are all tests passing?\n   - Have all commits been made if requested?\n   - Is there any unfinished work?\n\n2. **CLAUDE.md Rules Compliance**: Has Claude followed these project rules?\n\n   **Bun Usage Rules** (from bun-test/CLAUDE.md):\n   - Use `bun` instead of `node` or `npm`\n   - Use `bun test` instead of `jest` or `vitest`\n   - Use `bun build` instead of `webpack` or `esbuild`\n   - Use `bun install` instead of `npm install`\n   - Use `bun run` instead of `npm run`\n   - Use `Bun.serve()` instead of `express`\n   - Use `bun:sqlite` instead of `better-sqlite3`\n   - Use `Bun.file` instead of `node:fs`'s readFile/writeFile\n   - Don't use `dotenv` (Bun auto-loads .env)\n   - Don't use `vite` (use HTML imports with Bun.serve())\n\n   **Hooks Testing Rules** (from hooks-testing/CLAUDE.md):\n   - Test scripts must be executable (`chmod +x`)\n   - Scripts must log to `test-results/hook-results.log`\n   - Scripts must use proper exit codes (0=success, 2=block, other=non-blocking)\n   - All hooks should be documented in the testing manual\n   - Configuration must be in `.claude/settings.json`\n\nDecision Logic:\n- If the user's request is INCOMPLETE or rules are VIOLATED: Return {\"decision\": \"block\", \"reason\": \"Explain what's missing or violated\"}\n- If EVERYTHING is complete and compliant: Return {\"decision\": \"approve\", \"reason\": \"All tasks complete and rules followed\"}\n- If there are minor concerns but work is essentially done: Return {\"decision\": \"approve\", \"reason\": \"Work complete\", \"systemMessage\": \"Note: [your concern]\"}\n\nRespond ONLY with valid JSON in this exact format:\n{\"decision\": \"approve\" or \"block\", \"reason\": \"your explanation\", \"systemMessage\": \"optional warning\"}",
+            "timeout": 30
+          }
+        ]
+      }
     ]
   }
 }

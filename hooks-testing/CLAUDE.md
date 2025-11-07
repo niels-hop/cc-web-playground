@@ -12,7 +12,7 @@ This directory contains test infrastructure for validating which Claude Code hoo
 
 ## Current Status
 
-### ✅ Implemented Hooks (4/9)
+### ✅ Implemented Hooks (5/9)
 
 | Hook | Status | Trigger | Test Method |
 |------|--------|---------|-------------|
@@ -20,12 +20,12 @@ This directory contains test infrastructure for validating which Claude Code hoo
 | **PreToolUse** | 🧪 Testing | Before Write/Edit/Bash | Script at `test-scripts/pre-tool-use.sh` |
 | **PostToolUse** | 🧪 Testing | After Read/Grep/Glob | Script at `test-scripts/post-tool-use.sh` |
 | **UserPromptSubmit** | 🧪 Testing | User submits prompt | Script at `test-scripts/user-prompt-submit.sh` |
+| **Stop** | ✅ Working | Claude finishes responding | Prompt-based hook (validates completion & rules) |
 
-### 📋 Remaining Hooks (5/9)
+### 📋 Remaining Hooks (4/9)
 
 | Hook | Priority | Trigger | Test Strategy |
 |------|----------|---------|---------------|
-| **Stop** | High | Claude finishes responding | Create script to echo completion message |
 | **SubagentStop** | High | Task tool completes | Create script + trigger with Task tool |
 | **Notification** | Medium | Permission requests | Create script + trigger permission dialog |
 | **SessionEnd** | Low | Session terminates | Create script (hard to test automatically) |
@@ -62,6 +62,13 @@ Hooks are configured in `.claude/settings.json` at the project root:
     }],
     "UserPromptSubmit": [{
       "hooks": [{"type": "command", "command": "./hooks-testing/test-scripts/user-prompt-submit.sh"}]
+    }],
+    "Stop": [{
+      "hooks": [{
+        "type": "prompt",
+        "prompt": "Validates completion and CLAUDE.md rules compliance...",
+        "timeout": 30
+      }]
     }]
   }
 }
@@ -105,6 +112,46 @@ Send any message to Claude
 - Message: `🟡 UserPromptSubmit Hook: User submitted a prompt at [timestamp]`
 - Entry in `test-results/hook-results.log`
 
+### 4. Stop Hook (Prompt-Based)
+**Triggers**: When Claude finishes responding and is about to stop
+
+**Type**: Prompt-based hook (uses LLM evaluation)
+
+**Test it**:
+```
+Ask Claude to: "Implement a simple feature and commit it"
+```
+
+**What it validates**:
+1. **User Request Completion**: Checks if all requested tasks are complete
+   - Are all features implemented?
+   - Are tests passing?
+   - Have commits been made if requested?
+   - Is there unfinished work?
+
+2. **CLAUDE.md Rules Compliance**: Validates adherence to project rules
+   - Bun usage rules (from `bun-test/CLAUDE.md`)
+   - Hooks testing guidelines (from `hooks-testing/CLAUDE.md`)
+
+**Expected behavior**:
+- **Approve**: If work is complete and rules are followed
+- **Block**: If work is incomplete or rules are violated
+  - Claude will continue working to address the issues
+  - User sees the reason for blocking
+- **Warning**: If work is complete but there are minor concerns
+
+**Example responses from the hook**:
+```json
+// Approve - everything good
+{"decision": "approve", "reason": "All tasks complete and rules followed"}
+
+// Block - work incomplete
+{"decision": "block", "reason": "Tests have not been run yet"}
+
+// Approve with warning
+{"decision": "approve", "reason": "Work complete", "systemMessage": "Note: Consider adding error handling"}
+```
+
 ### Viewing Results
 
 Check the consolidated log file:
@@ -121,12 +168,7 @@ tail -f hooks-testing/test-results/hook-results.log
 
 ### Phase 2: Implement Remaining High-Priority Hooks
 
-1. **Stop Hook**
-   - Create `test-scripts/stop.sh`
-   - Add to `.claude/settings.json`
-   - Test by asking Claude to perform simple tasks
-
-2. **SubagentStop Hook**
+1. **SubagentStop Hook**
    - Create `test-scripts/subagent-stop.sh`
    - Add to `.claude/settings.json`
    - Test by asking Claude to use the Task tool (e.g., "Use the Explore agent to find all TypeScript files")
@@ -220,7 +262,7 @@ All hooks receive JSON via stdin with these common fields:
 - [ ] PreToolUse hook
 - [ ] PostToolUse hook
 - [ ] UserPromptSubmit hook
-- [ ] Stop hook
+- [x] Stop hook (prompt-based)
 - [ ] SubagentStop hook
 - [ ] Notification hook
 - [ ] SessionEnd hook
