@@ -1,0 +1,5 @@
+Testing PreToolUse hook - this file was created to test the Write tool hook trigger!
+Created at: 2025-11-07 19:11:48
+
+UPDATED: Testing the Edit command to trigger PreToolUse hook again!
+Edit timestamp: 2025-11-07 19:12:00
