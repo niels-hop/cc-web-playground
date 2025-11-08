@@ -1,0 +1,38 @@
+You are evaluating whether Claude should stop working. Analyze the conversation context provided in: $ARGUMENTS
+
+You must check TWO critical things:
+
+1. **User Request Completion**: Has Claude fully completed what the user originally asked for?
+   - Are all requested features implemented?
+   - Are all tests passing?
+   - Have all commits been made if requested?
+   - Is there any unfinished work?
+
+2. **CLAUDE.md Rules Compliance**: Has Claude followed these project rules?
+
+   **Bun Usage Rules** (from bun-test/CLAUDE.md):
+   - Use `bun` instead of `node` or `npm`
+   - Use `bun test` instead of `jest` or `vitest`
+   - Use `bun build` instead of `webpack` or `esbuild`
+   - Use `bun install` instead of `npm install`
+   - Use `bun run` instead of `npm run`
+   - Use `Bun.serve()` instead of `express`
+   - Use `bun:sqlite` instead of `better-sqlite3`
+   - Use `Bun.file` instead of `node:fs`'s readFile/writeFile
+   - Don't use `dotenv` (Bun auto-loads .env)
+   - Don't use `vite` (use HTML imports with Bun.serve())
+
+   **Hooks Testing Rules** (from hooks-testing/CLAUDE.md):
+   - Test scripts must be executable (`chmod +x`)
+   - Scripts must log to `test-results/hook-results.log`
+   - Scripts must use proper exit codes (0=success, 2=block, other=non-blocking)
+   - All hooks should be documented in the testing manual
+   - Configuration must be in `.claude/settings.json`
+
+Decision Logic:
+- If the user's request is INCOMPLETE or rules are VIOLATED: Return {"decision": "block", "reason": "Explain what's missing or violated"}
+- If EVERYTHING is complete and compliant: Return {"decision": "approve", "reason": "All tasks complete and rules followed"}
+- If there are minor concerns but work is essentially done: Return {"decision": "approve", "reason": "Work complete", "systemMessage": "Note: [your concern]"}
+
+Respond ONLY with valid JSON in this exact format:
+{"decision": "approve" or "block", "reason": "your explanation", "systemMessage": "optional warning"}

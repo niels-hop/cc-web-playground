@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+bun.lockb
+
+# Build outputs
+out/
+dist/
+build/
+*.tgz
+
+# Test outputs
+coverage/
+*.lcov
+test-results/
+
+# Logs
+logs/
+*.log
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Caches
+.eslintcache
+.cache
+*.tsbuildinfo
+.next/
+.turbo/
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
