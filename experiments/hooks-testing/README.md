@@ -1,25 +1,17 @@
 # Hooks Testing Experiment
 
-Testing which Claude Code hooks are supported in the web version.
+Tests which Claude Code hooks work in web version vs desktop.
 
-## Quick Start
+## Quick Reference
 
-1. **View the manual**: See `CLAUDE.md` for comprehensive testing instructions
-2. **Current hooks configured**: PreToolUse, PostToolUse, UserPromptSubmit (+ SessionStart)
-3. **View logs**: `cat test-results/hook-results.log`
+- **Test scripts**: `test-scripts/` (PreToolUse, PostToolUse, UserPromptSubmit)
+- **Archived configs**: `archive/` (test hooks moved here, only SessionStart active)
+- **View logs**: `cat test-results/hook-results.log`
+- **Full guide**: See `CLAUDE.md` for test instructions and results
 
-## Test the Hooks
+## Status Summary
 
-- **PreToolUse**: Ask Claude to create/edit a file or run a bash command
-- **PostToolUse**: Ask Claude to read a file
-- **UserPromptSubmit**: Send any message (this hook just triggered!)
-
-## Status
-
-- ✅ SessionStart (working)
-- 🧪 PreToolUse (testing)
-- 🧪 PostToolUse (testing)
-- 🧪 UserPromptSubmit (testing)
-- 📋 Stop, SubagentStop, Notification, SessionEnd, PreCompact (pending)
-
-Read `CLAUDE.md` for full documentation and testing procedures.
+- ✅ SessionStart (working - auto-installs Bun)
+- ✅ Stop (working - prompt-based validation)
+- 🧪 PreToolUse, PostToolUse, UserPromptSubmit (tested)
+- 📋 SubagentStop, Notification, SessionEnd, PreCompact (pending)

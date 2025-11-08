@@ -1,21 +1,20 @@
-# bun-react-tailwind-shadcn-template
+# Bun React App
 
-To install dependencies:
+React 19 + Bun + Tailwind + Shadcn UI starter template.
 
-```bash
-bun install
-```
-
-To start a development server:
+## Quick Start
 
 ```bash
-bun dev
+bun install    # Install dependencies
+bun dev        # Start dev server (http://localhost:3000)
+bun start      # Run production build
 ```
 
-To run for production:
+## Stack
 
-```bash
-bun start
-```
+- **Runtime**: Bun v1.3+
+- **Framework**: React 19
+- **Styling**: Tailwind CSS + Shadcn UI components
+- **Build**: Bun's native bundler (no Vite/Webpack)
 
-This project was created using `bun init` in bun v1.3.0. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+See `CLAUDE.md` for Bun-specific guidelines.

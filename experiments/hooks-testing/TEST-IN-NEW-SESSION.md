@@ -1,69 +1,29 @@
-# Test Instructions for New Session
+# New Session Testing Guide
 
-## ⚠️ Important: Hooks Require New Session
+## ⚠️ Hooks Require New Session
 
-According to the Claude Code documentation:
-> "Claude Code captures a snapshot of hooks at startup"
+Hooks are captured at startup. To test new hook configurations, restart Claude Code or start a fresh conversation.
 
-This means the 3 new hooks (PreToolUse, PostToolUse, UserPromptSubmit) we just configured **will NOT be active in this session**. They require starting a new session to take effect.
+## Test Steps
 
-## How to Test in New Session
+**1. PreToolUse**: `Create a file called test.txt`
+→ Expect: `🔵 PreToolUse Hook: About to execute tool 'Write'...`
 
-### Step 1: Start a New Session
-Close and restart Claude Code, or start a fresh conversation.
+**2. PostToolUse**: `Read the file CLAUDE.md`
+→ Expect: `🟢 PostToolUse Hook: Finished executing tool 'Read'...`
 
-### Step 2: Test PreToolUse Hook
-Ask Claude:
-```
-Create a file called hooks-testing/test.txt with the text "testing PreToolUse hook"
-```
+**3. UserPromptSubmit**: Send any message
+→ Expect: `🟡 UserPromptSubmit Hook: User submitted a prompt...`
 
-**Expected**: You should see a message like:
-```
-🔵 PreToolUse Hook: About to execute tool 'Write' at [timestamp]
-```
-
-### Step 3: Test PostToolUse Hook
-Ask Claude:
-```
-Read the file hooks-testing/CLAUDE.md
-```
-
-**Expected**: You should see a message like:
-```
-🟢 PostToolUse Hook: Finished executing tool 'Read' at [timestamp]
-```
-
-### Step 4: Test UserPromptSubmit Hook
-Send any message to Claude (even "hello").
-
-**Expected**: You should see a message like:
-```
-🟡 UserPromptSubmit Hook: User submitted a prompt at [timestamp]
-```
-
-### Step 5: Verify Logs
-Ask Claude to show the log file:
-```
-Show me the contents of hooks-testing/test-results/hook-results.log
-```
-
-You should see detailed JSON logs for each hook execution.
+**4. Verify**: `cat test-results/hook-results.log`
+→ Should show JSON logs for each execution
 
 ## Troubleshooting
 
-If hooks don't trigger:
-1. Verify `.claude/settings.json` has the hook configurations
-2. Verify scripts are executable: `ls -l hooks-testing/test-scripts/`
-3. Check for errors in the session startup messages
-4. Try the `/hooks` command to see active hooks
+- Check `.claude/settings.json` has hook configs
+- Verify scripts are executable: `ls -l test-scripts/`
+- Use `/hooks` command to see active hooks
 
-## Web Version Limitations
+## Document Results
 
-We're specifically testing which hooks work in the web version. Not all hooks may be supported. Document any differences you observe:
-
-- [ ] PreToolUse - Works? Y/N
-- [ ] PostToolUse - Works? Y/N
-- [ ] UserPromptSubmit - Works? Y/N
-
-Update `CLAUDE.md` with findings!
+Update `CLAUDE.md` with which hooks work in web version.
